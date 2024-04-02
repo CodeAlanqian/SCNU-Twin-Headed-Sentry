@@ -1,0 +1,9 @@
+/pointcloud_downsampling:
+  ros__parameters:
+    sub_topic: "/cloud_registered_body"
+    pub_topic: "/cloud_registered_body_downsampling"
+    pub_cloud_frame: "livox_frame"
+    leaf_size_x: 0.2
+    leaf_size_y: 0.2
+    leaf_size_z: 0.2
+    downsample_all_data: false
