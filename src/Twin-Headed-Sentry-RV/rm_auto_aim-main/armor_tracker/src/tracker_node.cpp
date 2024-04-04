@@ -327,11 +327,11 @@ void ArmorTrackerNode::publishMarkers(const auto_aim_interfaces::msg::Target & t
       marker_array.markers.emplace_back(armor_marker_);
     }
   } else {
-    position_marker_.action = visualization_msgs::msg::Marker::DELETE;
-    linear_v_marker_.action = visualization_msgs::msg::Marker::DELETE;
-    angular_v_marker_.action = visualization_msgs::msg::Marker::DELETE;
+    position_marker_.action = visualization_msgs::msg::Marker::DELETEALL;
+    linear_v_marker_.action = visualization_msgs::msg::Marker::DELETEALL;
+    angular_v_marker_.action = visualization_msgs::msg::Marker::DELETEALL;
 
-    armor_marker_.action = visualization_msgs::msg::Marker::DELETE;
+    armor_marker_.action = visualization_msgs::msg::Marker::DELETEALL;
     marker_array.markers.emplace_back(armor_marker_);
   }
 
