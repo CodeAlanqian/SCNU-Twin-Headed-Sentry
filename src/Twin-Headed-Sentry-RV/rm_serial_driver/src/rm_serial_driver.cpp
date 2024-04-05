@@ -89,6 +89,7 @@ RMSerialDriver::~RMSerialDriver()
     receive_thread_.join();
   }
 
+
   if (serial_driver_->port()->is_open()) {
     serial_driver_->port()->close();
   }
@@ -109,6 +110,7 @@ void RMSerialDriver::receiveData()
       serial_driver_->port()->receive(header);
 
       if (header[0] == 0x5A) {
+        // RCLCPP_ERROR(get_logger(), "Receive header: %02X", header[0]);
         data.resize(sizeof(ReceivePacket) - 1);
         serial_driver_->port()->receive(data);
 
@@ -126,7 +128,7 @@ void RMSerialDriver::receiveData()
           if (packet.reset_tracker) {
             resetTracker();
           }
-
+          RCLCPP_DEBUG(get_logger(), "detect_color: %d", packet.detect_color);
           geometry_msgs::msg::TransformStamped t1;
           timestamp_offset_ = this->get_parameter("timestamp_offset").as_double();
           t1.header.stamp = this->now() + rclcpp::Duration::from_seconds(timestamp_offset_);
@@ -162,6 +164,13 @@ void RMSerialDriver::receiveData()
             aiming_point_.pose.position.z = packet.aim_z;
             marker_pub_->publish(aiming_point_);
           }
+
+          sentry_msg_.hp = packet.hp;
+          sentry_msg_.time = packet.time;
+          // RCLCPP_ERROR(get_logger(), "Sentry HP: %d, Time: %d", sentry_msg_.hp, sentry_msg_.time);
+          sentry_pub_->publish(sentry_msg_);
+
+
         } else {
           RCLCPP_ERROR(get_logger(), "CRC error!");
         }
@@ -201,6 +210,7 @@ void RMSerialDriver::sendData(const auto_aim_interfaces::msg::Target::SharedPtr 
     crc16::Append_CRC16_Check_Sum(reinterpret_cast<uint8_t *>(&packet), sizeof(packet));
 
     std::vector<uint8_t> data = toVectorRv(packet);
+    // RCLCPP_DEBUG(get_logger(), "Send data: %02X", data[0]);
 
     serial_driver_->port()->send(data);
 
@@ -233,43 +243,46 @@ void RMSerialDriver::sendDataSentry(geometry_msgs::msg::Twist::SharedPtr msg)
 
 
 // TODO : 
-void RMSerialDriver::receiveDataSentry()
-{
-  std::vector<uint8_t> header(1);
-  std::vector<uint8_t> data;
-  data.reserve(sizeof(ReceivePacket));
+// void RMSerialDriver::receiveDataSentry()
+// {
+//   std::vector<uint8_t> header(1);
+//   std::vector<uint8_t> data;
+//   data.reserve(sizeof(ReceivePacket));
 
-  while (rclcpp::ok()) {
-    try {
-      serial_driver_->port()->receive(header);
+//   while (rclcpp::ok()) {
+//     try {
+//       serial_driver_->port()->receive(header);
 
-      if (header[0] == 0x6A) {
-        data.resize(sizeof(ReceivePacket) - 1);
-        serial_driver_->port()->receive(data);
+//       if (header[0] == 0x6A) {
+//         RCLCPP_ERROR(get_logger(), "Receive header: %02X", header[0]);
 
-        data.insert(data.begin(), header[0]);
-        ReceiveSentry packet = fromVectorSentry(data);
+//         data.resize(sizeof(ReceivePacket) - 1);
+//         serial_driver_->port()->receive(data);
 
-        bool crc_ok =
-          crc16::Verify_CRC16_Check_Sum(reinterpret_cast<const uint8_t *>(&packet), sizeof(packet));
-        if (crc_ok) {
-          sentry_msg_.hp = packet.hp;
-          sentry_msg_.time = packet.time;
-          sentry_pub_->publish(sentry_msg_);
+//         data.insert(data.begin(), header[0]);
+//         ReceiveSentry packet = fromVectorSentry(data);
 
-        } else {
-          RCLCPP_ERROR(get_logger(), "Sentry CRC error!");
-        }
-      } else {
-        RCLCPP_WARN_THROTTLE(get_logger(), *get_clock(), 20, "Invalid header: %02X", header[0]);
-      }
-    } catch (const std::exception & ex) {
-      RCLCPP_ERROR_THROTTLE(
-        get_logger(), *get_clock(), 20, "Error while receiving Sentry data: %s", ex.what());
-      reopenPort();
-    }
-  }
-}
+//         bool crc_ok =
+//           crc16::Verify_CRC16_Check_Sum(reinterpret_cast<const uint8_t *>(&packet), sizeof(packet));
+//         if (crc_ok) {
+//           sentry_msg_.hp = packet.hp;
+//           sentry_msg_.time = packet.time;
+//           RCLCPP_ERROR(get_logger(), "Sentry HP: %d, Time: %d", sentry_msg_.hp, sentry_msg_.time);
+//           sentry_pub_->publish(sentry_msg_);
+
+//         } else {
+//           RCLCPP_ERROR(get_logger(), "Sentry CRC error!");
+//         }
+//       } else {
+//         RCLCPP_WARN_THROTTLE(get_logger(), *get_clock(), 20, "Invalid header: %02X", header[0]);
+//       }
+//     } catch (const std::exception & ex) {
+//       RCLCPP_ERROR_THROTTLE(
+//         get_logger(), *get_clock(), 20, "Error while receiving Sentry data: %s", ex.what());
+//       reopenPort();
+//     }
+//   }
+// }
 
 
 void RMSerialDriver::getParams()

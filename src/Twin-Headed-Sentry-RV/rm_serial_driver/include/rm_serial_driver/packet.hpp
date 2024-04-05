@@ -26,6 +26,8 @@ struct ReceivePacket
   float aim_x;
   float aim_y;
   float aim_z;
+  uint16_t hp;
+  uint16_t time;
   uint16_t checksum = 0;
 } __attribute__((packed));
 
@@ -60,14 +62,14 @@ struct SendSentry
   /* data */
 }__attribute__((packed));
 
-struct ReceiveSentry
-{
-  uint8_t header = 0x6A;
-  uint16_t hp;
-  uint16_t time;
-  uint16_t checksum = 0;
-  /* data */
-}__attribute__((packed));
+// struct ReceiveSentry
+// {
+//   uint8_t header = 0x6A;
+//   uint16_t hp;
+//   uint16_t time;
+//   uint16_t checksum = 0;
+//   /* data */
+// }__attribute__((packed));
 
 
 
@@ -87,12 +89,12 @@ inline std::vector<uint8_t> toVectorRv(const SendPacket & data)
   return packet;
 }
 
-inline ReceiveSentry fromVectorSentry(const std::vector<uint8_t> & data)
-{
-  ReceiveSentry packet;
-  std::copy(data.begin(), data.end(), reinterpret_cast<uint8_t *>(&packet));
-  return packet;
-}
+// inline ReceiveSentry fromVectorSentry(const std::vector<uint8_t> & data)
+// {
+//   ReceiveSentry packet;
+//   std::copy(data.begin(), data.end(), reinterpret_cast<uint8_t *>(&packet));
+//   return packet;
+// }
 
 
 inline std::vector<uint8_t> toVectorSentry(const SendSentry & data)
