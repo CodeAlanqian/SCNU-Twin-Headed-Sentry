@@ -19,7 +19,7 @@
   <link name="odom_link_first" />
 
   <joint name="odom_joint_first" type="fixed">
-    <origin xyz="0 0.123 -0.140" rpy="$(arg rpy)" />
+    <origin xyz="0 0.123 -0.085" rpy="$(arg rpy)" />
     <parent link="gimbal" />
     <child link="odom_link_first" />
     <axis xyz="0 0 0" />
@@ -52,7 +52,7 @@
   <link name="odom_link_second" />
 
   <joint name="odom_joint_second" type="fixed">
-    <origin xyz="0 -0.123 -0.140" rpy="$(arg rpy)" />
+    <origin xyz="0 -0.123 -0.085" rpy="$(arg rpy)" />
     <parent link="gimbal" />
     <child link="odom_link_second" />
     <axis xyz="0 0 0" />
@@ -69,7 +69,7 @@
   <link name="camera_link_second" />
 
   <joint name="camera_joint_second" type="fixed">
-    <origin xyz="0.065 0 0.19" rpy="$(arg rpy)" />
+    <origin xyz="0.055 0 0.19" rpy="$(arg rpy)" />
     <parent link="gimbal_link_second" />
     <child link="camera_link_second" />
     <axis xyz="0 0 0" />
