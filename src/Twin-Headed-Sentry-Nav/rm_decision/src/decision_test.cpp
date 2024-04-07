@@ -30,12 +30,12 @@ RMDecision::RMDecision(const rclcpp::NodeOptions & options)
     
     point_home_.x = 0.0;
     point_home_.y = 0.0;
-
-    point_test1_.x=1.46;
-    point_test1_.y=3.5;
-
-    point_test2_.x=0;
-    point_test2_.y=0;
+     //center
+    point_test1_.x=0.23;
+    point_test1_.y=-5.13;
+     //blood
+    point_test2_.x=0.98;
+    point_test2_.y=3.83;
 
     hp_ = 0;
     time_ = 0;
@@ -95,18 +95,18 @@ void RMDecision::decision()
     {
         RCLCPP_INFO(this->get_logger(), "Decision making.");
         loop_rate.sleep();
-        if (time_ > 0)
+        if (time_ > 0 && time_< 295)
         {
             if (hp_ == 600) {
-                goal_msg_.pose.pose.position.x = point_enemy_supply_area_.x;
-                goal_msg_.pose.pose.position.y = point_enemy_supply_area_.y;
+                goal_msg_.pose.pose.position.x = point_home_.x;
+                goal_msg_.pose.pose.position.y = point_home_.y;
 
-            } else if (hp_ <= 300) {
-                goal_msg_.pose.pose.position.x = point_supply_area_.x;
-                goal_msg_.pose.pose.position.y = point_supply_area_.y;
-            } else if (hp_ == 500 ) {
-                goal_msg_.pose.pose.position.x = point_center_.x;
-                goal_msg_.pose.pose.position.y = point_center_.y;
+            } else if (hp_ <= 480) {
+                goal_msg_.pose.pose.position.x = point_test2_.x;
+                goal_msg_.pose.pose.position.y = point_test2_.y;
+            } else if (hp_ >= 500 && hp_<600) {
+                goal_msg_.pose.pose.position.x = point_test1_.x;
+                goal_msg_.pose.pose.position.y = point_test1_.y;
             }
             sendGoal();
 

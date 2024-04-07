@@ -123,20 +123,20 @@ controller_server:
     FollowPath:
       plugin: "dwb_core::DWBLocalPlanner"
       debug_trajectory_details: False
-      min_vel_x: -0.5
-      min_vel_y: -0.5
-      max_vel_x: 0.5
-      max_vel_y: 0.5
-      max_vel_theta: 5.0
-      min_speed_xy: -0.6
-      max_speed_xy: 0.6
-      min_speed_theta: -5.0
-      acc_lim_x: 2.0
-      acc_lim_y: 2.0
+      min_vel_x: -1.1
+      min_vel_y: -1.1
+      max_vel_x: 1.1
+      max_vel_y: 1.1
+      max_vel_theta: 1.0
+      min_speed_xy: -1.1
+      max_speed_xy: -1.1
+      min_speed_theta: -1.0
+      acc_lim_x: 2.5
+      acc_lim_y: 2.5
       acc_lim_theta: 0.5
-      decel_lim_x: -0.5        # x方向减速度限制
-      decel_lim_y: -0.5         # y方向减速度限制
-      decel_lim_theta: -5.0    # 角速度减速度限制
+      decel_lim_x: -1.1        # x方向减速度限制
+      decel_lim_y: -1.1         # y方向减速度限制
+      decel_lim_theta: -1.0    # 角速度减速度限制
       vx_samples: 20
       vy_samples: 20
       vtheta_samples: 20
@@ -176,12 +176,12 @@ local_costmap:
       width: 5
       height: 5
       resolution: 0.02
-      robot_radius: 0.2
+      robot_radius: 0.25
       plugins: ["voxel2d_layer", "voxel3d_layer", "inflation_layer"]
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
         cost_scaling_factor: 8.0
-        inflation_radius: 0.7
+        inflation_radius: 0.73
       voxel2d_layer:
         plugin: "nav2_costmap_2d::VoxelLayer"
         enabled: True
