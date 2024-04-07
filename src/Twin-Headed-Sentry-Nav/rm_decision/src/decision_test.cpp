@@ -31,19 +31,6 @@ RMDecision::RMDecision(const rclcpp::NodeOptions & options)
     point_home_.x = 0.0;
     point_home_.y = 0.0;
 
-    point_center_.x = 3.0;
-    point_center_.y = 1.0;
-
-    point_supply_area_.x = -2.5;
-    point_supply_area_.y = 2.85;
-    // -2.21, 2.85
-
-    point_wall_.x = 0.43;
-    point_wall_.y = 1.59;
-
-    point_enemy_supply_area_.x = 5.3;
-    point_enemy_supply_area_.y = -1.35;
-
     point_test1_.x=1.46;
     point_test1_.y=3.5;
 

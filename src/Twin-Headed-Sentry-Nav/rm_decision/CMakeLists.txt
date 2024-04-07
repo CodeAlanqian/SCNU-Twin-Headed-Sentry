@@ -28,6 +28,11 @@ ament_auto_add_executable(${PROJECT_NAME}_node
   src/decision.cpp
 )
 
+ament_auto_add_executable(${PROJECT_NAME}_test_node
+  src/decision_test.cpp
+)
+
+
 # ament_auto_add_library(${PROJECT_NAME} SHARED
 #   src/decision.cpp
 # )
