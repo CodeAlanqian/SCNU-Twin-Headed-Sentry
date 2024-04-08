@@ -40,6 +40,7 @@ private:
     float localPosition_y_;
     uint16_t hp_;
     uint16_t time_;
+    uint8_t mode_;
     rclcpp_action::ClientGoalHandle<nav2_msgs::action::NavigateToPose>::WrappedResult goal_result_;
     // float point_home_ = {0.0, 0.0};
     // float point_center_ = {3.0, 1.0};

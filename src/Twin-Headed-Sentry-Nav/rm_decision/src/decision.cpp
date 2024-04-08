@@ -63,6 +63,7 @@ void RMDecision::fromSentryCallback(const auto_aim_interfaces::msg::FromSentry::
 {
     hp_ = msg->hp;
     time_ = msg->time;
+    mode_ = msg->mode;
     RCLCPP_INFO(this->get_logger(), "Received message from Sentry. hp:%d, time:%d", hp_, time_);
 }
 
@@ -108,8 +109,11 @@ void RMDecision::decision()
     {
         RCLCPP_INFO(this->get_logger(), "Decision making.");
         loop_rate.sleep();
-        if (time_ > 0)
+        if (time_ > 0 && time_< 295)
         {
+            // if (goal_result_.code == rclcpp_action::ResultCode::SUCCEEDED) {
+            //     RCLCPP_WARN(this->get_logger(), "Goal has been reached.");
+            // }
             if (hp_ == 600) {
                 goal_msg_.pose.pose.position.x = point_enemy_supply_area_.x;
                 goal_msg_.pose.pose.position.y = point_enemy_supply_area_.y;

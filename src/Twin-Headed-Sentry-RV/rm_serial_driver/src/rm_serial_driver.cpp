@@ -167,6 +167,7 @@ void RMSerialDriver::receiveData()
 
           sentry_msg_.hp = packet.hp;
           sentry_msg_.time = packet.time;
+          sentry_msg_.mode = packet.mode;
           // RCLCPP_ERROR(get_logger(), "Sentry HP: %d, Time: %d", sentry_msg_.hp, sentry_msg_.time);
           sentry_pub_->publish(sentry_msg_);
 

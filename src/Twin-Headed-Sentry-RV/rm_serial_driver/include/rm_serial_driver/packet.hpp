@@ -28,6 +28,7 @@ struct ReceivePacket
   float aim_z;
   uint16_t hp;
   uint16_t time;
+  uint8_t mode; //0-原地 1-进攻 2-防守
   uint16_t checksum = 0;
 } __attribute__((packed));
 

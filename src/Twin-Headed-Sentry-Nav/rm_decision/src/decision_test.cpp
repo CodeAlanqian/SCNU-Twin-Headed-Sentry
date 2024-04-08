@@ -50,6 +50,7 @@ void RMDecision::fromSentryCallback(const auto_aim_interfaces::msg::FromSentry::
 {
     hp_ = msg->hp;
     time_ = msg->time;
+    mode_ = msg->mode;
     RCLCPP_INFO(this->get_logger(), "Received message from Sentry. hp:%d, time:%d", hp_, time_);
 }
 
