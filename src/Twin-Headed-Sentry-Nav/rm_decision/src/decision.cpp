@@ -57,6 +57,8 @@ RMDecision::RMDecision(const rclcpp::NodeOptions & options)
     time_ = 0;
     last_hp_ = 0;
     added_hp_ = 0;
+    last_added_hp_ = 0;
+    return_state_ = false;
 
     send_goal_options_.result_callback = std::bind(&RMDecision::goalResultCallback, this, std::placeholders::_1);
     // action_client_->async_send_goal(goal_msg, send_goal_options);
@@ -67,6 +69,7 @@ RMDecision::RMDecision(const rclcpp::NodeOptions & options)
 void RMDecision::fromSentryCallback(const auto_aim_interfaces::msg::FromSentry::SharedPtr msg)
 {
     last_hp_ = hp_;
+    last_added_hp_ = added_hp_;
     hp_ = msg->hp;
     time_ = msg->time;
     mode_ = msg->mode;
@@ -74,6 +77,16 @@ void RMDecision::fromSentryCallback(const auto_aim_interfaces::msg::FromSentry::
         added_hp_ += hp_ - last_hp_;
         RCLCPP_INFO(this->get_logger(), "HP has been added. Totally added_hp:%d", added_hp_);
     }
+
+    if (last_added_hp_ != 0 && added_hp_ - last_added_hp_ > 0 ) {
+        // returning blood
+        return_state_ = true;
+
+        // RCLCPP_INFO(this->get_logger(), "HP has been added. Totally added_hp:%d", added_hp_);
+    } else {
+        return_state_ = false;
+    }
+
     RCLCPP_INFO(this->get_logger(), "Received message from Sentry. hp:%d, time:%d", hp_, time_);
 }
 

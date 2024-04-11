@@ -43,6 +43,8 @@ private:
     uint8_t mode_;
     uint16_t last_hp_;
     uint16_t added_hp_;
+    uint16_t last_added_hp_;
+    bool return_state_;
     rclcpp_action::ClientGoalHandle<nav2_msgs::action::NavigateToPose>::WrappedResult goal_result_;
     // float point_home_ = {0.0, 0.0};
     // float point_center_ = {3.0, 1.0};
