@@ -32,6 +32,11 @@ ament_auto_add_executable(${PROJECT_NAME}_test_node
   src/decision_test.cpp
 )
 
+ament_auto_add_executable(${PROJECT_NAME}_pub_node
+  src/sim_pub.cpp
+)
+
+
 
 # ament_auto_add_library(${PROJECT_NAME} SHARED
 #   src/decision.cpp

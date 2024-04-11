@@ -86,26 +86,26 @@ void RMDecision::fromSentryCallback(const auto_aim_interfaces::msg::FromSentry::
         RCLCPP_INFO(this->get_logger(), "HP has been added. Totally added_hp:%d", added_hp_);
     }
 
-    if (last_added_hp_ != 0 && added_hp_ - last_added_hp_ > 0 ) {
-        // returning blood
-        return_state_ = true;
-        if ( return_time_ == 0 ) {
-            return_time_ = time_;
-        }
+    // if (last_added_hp_ != 0 && added_hp_ - last_added_hp_ > 0 ) {
+    //     // returning blood
+    //     return_state_ = true;
+    //     if ( return_time_ == 0 ) {
+    //         return_time_ = time_;
+    //     }
         
 
-        // RCLCPP_INFO(this->get_logger(), "HP has been added. Totally added_hp:%d", added_hp_);
-    } else {
-        return_state_ = false;
-        return_time_ = 0;
-    }
+    //     // RCLCPP_INFO(this->get_logger(), "HP has been added. Totally added_hp:%d", added_hp_);
+    // } else {
+    //     return_state_ = false;
+    //     return_time_ = 0;
+    // }
 
     RCLCPP_INFO(this->get_logger(), "Received message from Sentry. hp:%d, time:%d", hp_, time_);
 }
 
 void RMDecision::goalResultCallback(const rclcpp_action::ClientGoalHandle<nav2_msgs::action::NavigateToPose>::WrappedResult& result)
 {
-    RCLCPP_INFO(this->get_logger(), "Goal has been reached.");
+    // RCLCPP_INFO(this->get_logger(), "Goal has been reached.");
     goal_result_ = result;
     //goal_result_.code  =
     //rclcpp_action::ResultCode::SUCCEEDED
@@ -116,7 +116,7 @@ void RMDecision::goalResultCallback(const rclcpp_action::ClientGoalHandle<nav2_m
 
 void RMDecision::sendGoal()
 {
-    RCLCPP_INFO(this->get_logger(), "Sending goal.");
+    // RCLCPP_INFO(this->get_logger(), "Sending goal.");
     while (!action_client_->wait_for_action_server(10s)) {
         if (!rclcpp::ok()) {
             RCLCPP_ERROR(get_logger(), "Action server not available after waiting.");
@@ -131,7 +131,7 @@ void RMDecision::sendGoal()
 
 void RMDecision::getLocalposition(const nav_msgs::msg::Odometry::SharedPtr msg)
 {
-    RCLCPP_INFO(this->get_logger(), "Received message from Odometry.");
+    // RCLCPP_INFO(this->get_logger(), "Received message from Odometry.");
     localPosition_x_ = msg->pose.pose.position.x;
     localPosition_y_ = msg->pose.pose.position.y;
     RCLCPP_INFO(this->get_logger(), "x:%f, y:%f", msg->pose.pose.position.x, msg->pose.pose.position.y);
@@ -169,7 +169,10 @@ void RMDecision::decision()
             if ( hp_<340 && added_hp_ <= 580 && time_ <= 240 ) {
                 goal_msg_.pose.pose.position.x = point_supply_area_.x;
                 goal_msg_.pose.pose.position.y = point_supply_area_.y;
-                
+                return_state_ = true;
+                if ( return_time_ == 0 ) {
+                    return_time_ = time_;
+                }
             } else {
                 if ( time_ > 240 ) {
                     //protect base
@@ -183,12 +186,12 @@ void RMDecision::decision()
                             goal_msg_.pose.pose.position.y = point_home_.y;
                         } else if ( mode_ == 1 ) {
                             
-                            if ( time_ - last_send_time_ >= 6 && last_state == 0 ) {
+                            if ( time_ - last_send_time_ >= 10 && last_state == 0 ) {
                                 last_send_time_ = time_;
                                 last_state = 1;
                                 goal_msg_.pose.pose.position.x = point_wall_left_.x;
                                 goal_msg_.pose.pose.position.y = point_wall_left_.y;
-                            } else if ( time_ - last_send_time_ >= 6 && last_state == 1 ){
+                            } else if ( time_ - last_send_time_ >= 10 && last_state == 1 ){
                                 last_send_time_ = time_;
                                 last_state = 0;
                                 goal_msg_.pose.pose.position.x = point_wall_center_.x;
@@ -197,7 +200,8 @@ void RMDecision::decision()
                             //TODO 
                             // goal_msg_.pose.pose.position.x = point_wall_center_.x;
                             // goal_msg_.pose.pose.position.y = point_wall_center_.y;
-
+                        
+                        // attack mode
                         } else if ( mode_ == 2 ) {
 
                             goal_msg_.pose.pose.position.x = point_right_.x;
@@ -208,9 +212,11 @@ void RMDecision::decision()
                         }
                     } else {
                         //returning state, remain 5s
-                        if ( return_time_ > 0 && time_ - return_time_ > 5 ) {
+                        if ( return_time_ > 0 && time_ - return_time_ >= 5 ) {
                             goal_msg_.pose.pose.position.x = point_home_.x;
                             goal_msg_.pose.pose.position.y = point_home_.y;
+                            return_state_ = false;
+                            return_time_ = 0;
                         }
                     }
 
@@ -222,13 +228,7 @@ void RMDecision::decision()
 
             }
 
-
-            
-
             sendGoal();
-
-
-
         }
     }
     
