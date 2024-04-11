@@ -41,6 +41,8 @@ private:
     uint16_t hp_;
     uint16_t time_;
     uint8_t mode_;
+    uint16_t last_hp_;
+    uint16_t added_hp_;
     rclcpp_action::ClientGoalHandle<nav2_msgs::action::NavigateToPose>::WrappedResult goal_result_;
     // float point_home_ = {0.0, 0.0};
     // float point_center_ = {3.0, 1.0};
@@ -51,6 +53,7 @@ private:
     geometry_msgs::msg::Point point_supply_area_;
     geometry_msgs::msg::Point point_enemy_supply_area_;
     geometry_msgs::msg::Point point_wall_;
+    geometry_msgs::msg::Point point_right_;
 
     geometry_msgs::msg::Point point_test1_;
     geometry_msgs::msg::Point point_test2_;

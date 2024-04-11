@@ -32,7 +32,7 @@ RMDecision::RMDecision(const rclcpp::NodeOptions & options)
     point_home_.y = 0.0;
 
     point_center_.x = 3.0;
-    point_center_.y = 1.0;
+    point_center_.y = 0.54;
 
     point_supply_area_.x = -2.5;
     point_supply_area_.y = 2.85;
@@ -44,14 +44,19 @@ RMDecision::RMDecision(const rclcpp::NodeOptions & options)
     point_enemy_supply_area_.x = 5.3;
     point_enemy_supply_area_.y = -1.35;
 
-    point_test1_.x=1.46;
-    point_test1_.y=3.5;
+    point_right_.x = 2.90;
+    point_right_.y = -2.10;
 
-    point_test2_.x=0;
-    point_test2_.y=0;
+    // point_test1_.x=1.46;
+    // point_test1_.y=3.5;
+
+    // point_test2_.x=0;
+    // point_test2_.y=0;
 
     hp_ = 0;
     time_ = 0;
+    last_hp_ = 0;
+    added_hp_ = 0;
 
     send_goal_options_.result_callback = std::bind(&RMDecision::goalResultCallback, this, std::placeholders::_1);
     // action_client_->async_send_goal(goal_msg, send_goal_options);
@@ -61,9 +66,14 @@ RMDecision::RMDecision(const rclcpp::NodeOptions & options)
 
 void RMDecision::fromSentryCallback(const auto_aim_interfaces::msg::FromSentry::SharedPtr msg)
 {
+    last_hp_ = hp_;
     hp_ = msg->hp;
     time_ = msg->time;
     mode_ = msg->mode;
+    if (last_hp_ != 0 && hp_ - last_hp_ > 0 ) {
+        added_hp_ += hp_ - last_hp_;
+        RCLCPP_INFO(this->get_logger(), "HP has been added. Totally added_hp:%d", added_hp_);
+    }
     RCLCPP_INFO(this->get_logger(), "Received message from Sentry. hp:%d, time:%d", hp_, time_);
 }
 
