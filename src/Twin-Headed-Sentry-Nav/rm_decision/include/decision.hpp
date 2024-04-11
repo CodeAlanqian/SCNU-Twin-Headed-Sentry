@@ -31,6 +31,7 @@ private:
     void sendGoal();
     void getLocalposition(const nav_msgs::msg::Odometry::SharedPtr msg);
     void goalResultCallback(const rclcpp_action::ClientGoalHandle<nav2_msgs::action::NavigateToPose>::WrappedResult& result);
+    bool isGoalReached(geometry_msgs::msg::Point target);
     rclcpp_action::Client<nav2_msgs::action::NavigateToPose>::SharedPtr action_client_;
 
     nav2_msgs::action::NavigateToPose::Goal goal_msg_;
@@ -45,6 +46,9 @@ private:
     uint16_t added_hp_;
     uint16_t last_added_hp_;
     bool return_state_;
+    uint16_t return_time_;
+    uint16_t last_send_time_;
+    uint8_t last_state;
     rclcpp_action::ClientGoalHandle<nav2_msgs::action::NavigateToPose>::WrappedResult goal_result_;
     // float point_home_ = {0.0, 0.0};
     // float point_center_ = {3.0, 1.0};
@@ -54,8 +58,10 @@ private:
     geometry_msgs::msg::Point point_center_;
     geometry_msgs::msg::Point point_supply_area_;
     geometry_msgs::msg::Point point_enemy_supply_area_;
-    geometry_msgs::msg::Point point_wall_;
+    geometry_msgs::msg::Point point_wall_center_;
     geometry_msgs::msg::Point point_right_;
+    geometry_msgs::msg::Point point_base_;
+    geometry_msgs::msg::Point point_wall_left_;
 
     geometry_msgs::msg::Point point_test1_;
     geometry_msgs::msg::Point point_test2_;
